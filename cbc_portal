@@ -1,0 +1,44 @@
+
+
+-- 2. Students Table (Handles Learner Dashboard Data)
+CREATE TABLE IF NOT EXISTS students (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    second_name VARCHAR(50) NOT NULL,
+    grade VARCHAR(20) NOT NULL,
+    stream VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL, -- Secure Hashed Password
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- 3. Projects Table (Stores Digital Evidence & Reflections)
+CREATE TABLE IF NOT EXISTS projects (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    student_id INT(11) NOT NULL,
+    media_url VARCHAR(255), -- Path to photo or YouTube link [cite: 2, 4]
+    media_type ENUM('photo', 'video') NOT NULL,
+    reflection TEXT, -- Student's reflection on the project 
+    status ENUM('pending', 'reviewed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- 4. Assessments Table (Teacher's Dashboard Data)
+CREATE TABLE IF NOT EXISTS assessments (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    project_id INT(11) NOT NULL,
+    cbc_level ENUM('EE', 'ME', 'AE', 'BE') NOT NULL, -- CBC levels 
+    marks INT(3),
+    remarks TEXT, -- Teacher's feedback visible on report 
+    awarded_by VARCHAR(100),
+    assessment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- 5. Teachers Table (Secure Access Gateway)
+CREATE TABLE IF NOT EXISTS teachers (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL, -- To be created after initial 12345678 access
+    is_active TINYINT(1) DEFAULT 1
+) ENGINE=InnoDB;

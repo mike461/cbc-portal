@@ -1,0 +1,2 @@
+-- This moves all Grade 3 students to Grade 4
+UPDATE students SET grade = 'Grade 4' WHERE grade = 'Grade 3';
